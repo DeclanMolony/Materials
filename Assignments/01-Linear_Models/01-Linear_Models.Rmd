@@ -1,0 +1,151 @@
+---
+title: "Assignment 1: Linear Models"
+author: "Stat 434"
+output: rmdformats::readthedown
+---
+
+# Instructions
+
+You will submit an HTML document to Canvas as your final version.
+
+You may work with **one** other person for this assignment.  Make sure both your names are on the HTML document, and you should **both** upload a copy of the assignment to Canvas.
+
+Your document should show your code chunks/cells as well as any output.  Make sure that only relevant output is printed.  Do not, for example, print the entire dataset in your final knitted file.
+
+Your document should also be clearly organized, so that it is easy for a reader to find your answers to each question.
+
+There may be a small penalty for submissions that are difficult to read or navigate.
+
+
+## Part One: Data Exploration
+
+The dataset we will study for this assignment contains information about health insurance costs for individuals with no dependents (children) in the United States.  The information contained in the data is:
+
+* Age of primary beneficiary
+
+* Gender of primary beneficiary (only female, male recorded)
+
+* Body mass index, providing an understanding of body, weights that are relatively high or low relative to height, objective index of body weight (kg / m ^ 2) using the ratio of height to weight, ideally 18.5 to 24.9
+
+* Whether the beneficiary smokes
+
+* The beneficiary's residential area in the US, northeast, southeast, southwest, northwest.
+
+* Individual medical costs billed by health insurance
+
+
+```{r, include = FALSE, eval = FALSE}
+ins <- read_csv(here::here("Materials", "Assignments", "data", "insurance.csv"))
+
+set.seed(13938)
+
+splits <- ins %>% 
+  filter(children == 0 ) %>%
+  select(-children) %>%
+  initial_split()
+
+splits %>%
+  training() %>%
+  write_csv(here::here("Materials", "Assignments", "data", "insurance_costs_1.csv"))
+
+
+splits %>%
+  testing() %>%
+  write_csv(here::here("Materials", "Assignments", "data", "insurance_costs_2.csv"))
+```
+
+You can find this data at: https://www.dropbox.com/s/bocjjyo1ehr5auz/insurance_costs_1.csv?dl=1
+
+
+1. Read in the dataset, and display some summaries of the data.  
+
+2. Fix any concerns you have about the data.
+
+3. Make up to three plots comparing the response variable (`charges`) to one of the predictor variables.  Briefly discuss each plot.
+
+
+## Part Two:  Simple Linear Models
+
+
+1.  Construct a simple linear model to predict the insurance charges from the beneficiary's age.  Discuss the model fit, and interpret the coefficient estimates.
+
+2.  Make a model that also incorporates the variable `sex`.  Report your results.
+
+3.  Now make a model that does not include `sex`, but does include `smoker`.  Report your results.
+
+4.  Which model (Q2 or Q3) do you think better fits the data?  Justify your answer by calculating the MSE for each model, and also by comparing R-squared values.
+
+
+## Part Three:  Multiple Linear Models
+
+
+Now let's consider including multiple *quantitative* predictors.
+
+1. Fit a model that uses `age` and `bmi` as predictors. (Do not include an interaction term between these two.) Report your results.  How does the MSE compare to the model in Part Two Q1?  How does the R-squared compare?
+
+
+2. Perhaps the relationships are not linear.  Fit a model that uses `age` and `age^2` as predictors.  How do the MSE and R-squared compare to the model in P2 Q1?
+
+Hint:  You can do this by using the following formula:
+
+```{r, eval = FALSE}
+charges ~ poly(age, 2)
+```
+
+3. Fit a polynomial model of degree 4.  How do the MSE and R-squared compare to the model in P2 Q1?
+
+4. Fit a polynomial model of degree 12.  How do the MSE and R-squared compare to the model in P2 Q1?
+
+5. According to the MSE and R-squared, which is the best model?  Do you agree that this is indeed the "best" model?  Why or why not?
+
+6. Plot the predictions from your model in Q4 as a **line** plot on top of the scatterplot of your original data.  
+
+
+
+Hint: 
+
+```{r, eval = FALSE}
+<YOUR DATASET> %>%
+  ggplot() +
+  geom_point(aes(x = age, y = charges)) +
+  geom_line(aes(x = age, y = predicted_charges))
+
+```
+
+
+
+## Part Four:  New data
+
+Great news!  We've managed to collect data about the insurance costs for a few more individuals.  You can find the new dataset here:  https://www.dropbox.com/s/sky86agc4s8c6qe/insurance_costs_2.csv?dl=1
+
+
+Consider the following possible models:
+
+* Only `age` as a predictor.
+
+* `age` and `bmi` as a predictor.
+
+* `age`, `bmi`, and `smoker` as predictors (no interaction terms)
+
+* `age`, and `bmi`, with both quantitative variables having an interaction term with `smoker`  (i.e. the formula `~ (age + bmi):smoker`)
+
+* `age`, `bmi`, and `smoker`as predictors, with both quantitative variables having an interaction term with `smoker` (i.e. the formula `~ (age + bmi)*smoker`)
+
+
+For each model, *fit* the model on the **original data**.
+
+Then, use the fitted model to *predict* on the **new data**.
+
+Report the MSE for each model's **new** predictions.  Based on this, which is the best model to use?
+
+Make a plot showing the residuals of your final chosen model.
+
+
+## Challenge
+
+Turn in a **separate HTML file** for your Challenge, if you choose to try it out.
+
+Using any variables in this dataset, and any polynomial of those variables, find the model that best predicts on the **new data** after being fit on the **original data**.  
+
+Make a plot showing the residuals of your final chosen model.
+

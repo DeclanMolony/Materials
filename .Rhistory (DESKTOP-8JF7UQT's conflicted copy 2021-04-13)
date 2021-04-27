@@ -1,0 +1,512 @@
+quit
+reticulate::repl_python()
+poly_mod_1.summary
+poly_mod_1.coef_
+print(poly_mod_1)
+print(poly_mod_2)
+print(poly_mod_20)
+quit
+reticulate::repl_python()
+absError = ins['preds_1'] - ins['charges']
+SE = np.square(absError) # squared errors
+MSE = np.mean(SE) # mean squared errors
+np.sqrt(MSE) # Root Mean Squared Error, RMSE
+absError = ins['preds_20'] - ins['charges']
+SE = np.square(absError) # squared errors
+MSE = np.mean(SE) # mean squared errors
+np.sqrt(MSE)
+x_train, x_test, y_train, y_test = train_test_split(ins['bmi'], ins['charges'])
+quit
+reticulate::repl_python()
+random.seed(190498)
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(ins['bmi'], ins['charges'])
+quit
+reticulate::repl_python()
+cross_validation = KFold(n_splits=10)
+scores_1 = cross_val_score(poly_mod_1, ins["bmi"], ins[["charges"]], scoring="neg_mean_squared_error", cv=cross_validation)
+quit
+reticulate::repl_python()
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
+poly_mod_1 = np.polyfit(x = ins["bmi"], y = ins[["charges"]], deg = 1)
+poly_mod_20 = np.polyfit(x = ins["bmi"], y = ins[["charges"]], deg = 20)
+quit
+reticulate::repl_python()
+cross_validation = KFold(n_splits=10)
+scores_1 = cross_val_score(poly_mod_1, ins["bmi"], ins[["charges"]], scoring="neg_mean_squared_error", cv=cross_validation)
+poly = PolynomialFeatures(degree=20)
+poly = PolynomialFeatures(degree=20)
+x_dat_20 = poly.fit_transform(ins["bmi"])
+x_dat = ins["bmi"].values.reshape(-1,1)
+x_dat_20 = poly.fit_transform(x_dat)
+quit
+reticulate::repl_python()
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
+lm = LinearRegression()
+poly = PolynomialFeatures(degree=20)
+x_dat = ins["bmi"].values.reshape(-1,1)
+x_dat_20 = poly.fit_transform(x_dat)
+poly_mod_1 = lm.fit(x = x_dat, y = ins[["charges"]])
+poly_mod_20 = lm.fit(x = x_dat_20, y = ins[["charges"]])
+poly_mod_1 = lm.fit(x_dat, y = ins[["charges"]])
+poly_mod_20 = lm.fit(x_dat_20, y = ins[["charges"]])
+quit
+reticulate::repl_python()
+cross_validation = KFold(n_splits=10)
+scores_1 = cross_val_score(poly_mod_1, x_dat, ins[["charges"]], scoring="neg_mean_squared_error", cv=cross_validation)
+scores_20 = cross_val_score(poly_mod_20, x_dat_20, ins[["charges"]], scoring="neg_mean_squared_error", cv=cross_validation)
+scores_1
+scores_20
+scores_1.mean()
+scores_20.mean()
+quit
+lr_mod <- linear_reg() %>%
+set_mode("regression") %>%
+set_engine("lm")
+remotes::install_github("mkearney/rmd2jupyter")
+?initial_splits
+?tidymodel::initial_splits
+?tidymodels::initial_splits
+library(tidyverse)
+library(tidymodels)
+whr <- read_csv(here::here("Assignments", "data", "world-happiness-report.csv"))
+whr2 <- read_csv(here::here("Assignments", "data", "world-happiness-report-2021.csv"))
+ref <- whr2 %>% select(`Country name`, `Regional indicator`)
+whr %>%
+left_join(ref) %>%
+janitor::clean_names() %>%
+filter(year < 2020) %>%
+select(country_name,
+regional_indicator,
+life_ladder,
+log_gdp_per_capita,
+healthy_life_expectancy_at_birth,
+social_support,
+freedom_to_make_life_choices,
+generosity,
+perceptions_of_corruption,
+year) %>%
+rename(healthy_life_expectancy = healthy_life_expectancy_at_birth,
+happiness_score = life_ladder) %>%
+write_csv(here::here("Assignments", "data","whr_clean.csv"))
+whr2 %>%
+janitor::clean_names() %>%
+select(country_name,
+regional_indicator,
+logged_gdp_per_capita,
+healthy_life_expectancy,
+social_support,
+freedom_to_make_life_choices,
+generosity,
+perceptions_of_corruption) %>%
+rename(log_gdp_per_capita = logged_gdp_per_capita) %>%
+mutate(
+year = 2020
+) %>%
+write_csv(here::here("Assignments", "data","whr_2020.csv"))
+whr <- read_csv("https://www.dropbox.com/s/aau732ery3uujct/whr_clean.csv?dl=1")
+recipe(social_support ~ healthy_life_expectancy, data = whr_new) %>% step_normalize(social_support)
+recipe(social_support ~ healthy_life_expectancy, data = whr) %>% step_normalize(social_support)
+?read.csv
+library(tidyverse)
+colleges <- read.csv("https://www.dropbox.com/s/bt5hvctdevhbq6j/colleges.csv?dl=1")
+colleges_clean <- colleges %>%
+select(INSTNM, CITY, STABBR, ZIP, ADM_RATE, SAT_AVG, TUITIONFEE_IN, TUITIONFEE_OUT, UGDS, CONTROL, REGION)
+colleges_clean <- colleges_clean %>%
+filter(CONTROL == c(1,2))
+head(colleges_clean)
+colleges_clean <- colleges_clean %>% mutate(
+TUITIONFEE_IN = as.numeric(TUITIONFEE_IN),
+TUITIONFEE_OUT = as.numeric(TUITIONFEE_OUT),
+SAT_AVG = as.numeric(SAT_AVG),
+ADM_RATE = as.numeric(ADM_RATE)
+)
+colleges_clean %>% mutate(
+CONTROL = as_factor(CONTROL),
+REGION = as_factor(REGION)
+)
+colleges_clean <- colleges_clean %>% mutate(
+TUITION_DIFF = TUITIONFEE_OUT - TUITIONFEE_IN
+)
+colleges_clean <- colleges_clean %>% drop_na()
+finding_college <- colleges_clean %>%
+filter(REGION == 1)
+head(finding_college)
+finding_college <- finding_college %>%
+arrange(ADM_RATE) %>%
+top_n(-11, ADM_RATE)
+finding_college <- finding_college %>%
+filter(TUITIONFEE_IN == TUITIONFEE_OUT)
+finding_college
+finding_college <- finding_college %>%
+filter(SAT_AVG %% 2 == 1)
+finding_college <- finding_college %>%
+filter(STABBR != "NH") %>%
+filter(CITY != "Boston") %>%
+filter(INSTNM != "Harvard University")
+finding_college
+2342/0.2418
+colleges_clean <- colleges_clean %>%
+select(INSTNM, CITY, STABBR, ZIP, ADM_RATE, SAT_AVG, TUITIONFEE_IN, TUITIONFEE_OUT, UGDS, CONTROL, REGION) %>%
+filter(CONTROL %in% c(1,2)) %>%
+mutate(
+TUITIONFEE_IN = as.numeric(TUITIONFEE_IN),
+TUITIONFEE_OUT = as.numeric(TUITIONFEE_OUT),
+SAT_AVG = as.numeric(SAT_AVG),
+ADM_RATE = as.numeric(ADM_RATE)
+) %>%
+mutate(
+CONTROL = as_factor(CONTROL),
+REGION = as_factor(REGION)
+) %>%
+mutate(
+TUITION_DIFF = TUITIONFEE_OUT - TUITIONFEE_IN
+) %>%
+drop_na()
+finding_college <- colleges_clean %>%
+filter(REGION == 1)
+finding_collge
+finding_college
+finding_college %>% arrange(ADM_RATE)
+quantile(finding_college$ADM_RATE, .25)
+?quantile
+summary(finding_college$ADM_RATE, .25)
+finding_college <- colleges_clean %>%
+filter(REGION == 1)
+finding_college <- finding_college %>%
+arrange(ADM_RATE) %>%
+top_n(-11, ADM_RATE)
+finding_college <- finding_college %>%
+filter(TUITIONFEE_IN == TUITIONFEE_OUT)
+finding_college <- finding_college %>%
+filter(SAT_AVG %% 2 == 1)
+finding_college
+2342/4/.2418
+finding_college <- finding_college %>%
+arrange(ADM_RATE) %>%
+top_n(-12, ADM_RATE)
+finding_college <- colleges_clean %>%
+filter(REGION == 1)
+finding_college <- finding_college %>%
+arrange(ADM_RATE) %>%
+top_n(-12, ADM_RATE)
+finding_college <- finding_college %>%
+filter(TUITIONFEE_IN == TUITIONFEE_OUT)
+finding_college <- finding_college %>%
+filter(SAT_AVG %% 2 == 1)
+finding_college
+colleges_clean
+finding_college <- colleges_clean %>%
+filter(REGION == 1)
+finding_college
+colleges_clean %>% filter(str_detect(INSTNM, "Amherst"))
+colleges %>% filter(str_detect(INSTNM, "Amherst"))
+finding_college <- colleges_clean %>%
+filter(REGION == 1)
+finding_college %>% filter(str_detect(INSTNM, "Amherst"))
+colleges_clean <- colleges_clean %>%
+filter(CONTROL %in% c(1,2))
+colleges_clean <- colleges %>%
+select(INSTNM, CITY, STABBR, ZIP, ADM_RATE, SAT_AVG, TUITIONFEE_IN, TUITIONFEE_OUT, UGDS, CONTROL, REGION)
+colleges_clean <- colleges_clean %>%
+filter(CONTROL %in% c(1,2))
+colleges_clean <- colleges_clean %>% mutate(
+TUITIONFEE_IN = as.numeric(TUITIONFEE_IN),
+TUITIONFEE_OUT = as.numeric(TUITIONFEE_OUT),
+SAT_AVG = as.numeric(SAT_AVG),
+ADM_RATE = as.numeric(ADM_RATE)
+)
+colleges_clean %>% mutate(
+CONTROL = as_factor(CONTROL),
+REGION = as_factor(REGION)
+)
+colleges_clean <- colleges_clean %>% mutate(
+TUITION_DIFF = TUITIONFEE_OUT - TUITIONFEE_IN
+)
+colleges_clean <- colleges_clean %>% drop_na()
+colleges_clean <- colleges %>%
+select(INSTNM, CITY, STABBR, ZIP, ADM_RATE, SAT_AVG, TUITIONFEE_IN, TUITIONFEE_OUT, UGDS, CONTROL, REGION) %>%
+filter(CONTROL %in% c(1,2)) %>%
+mutate(
+TUITIONFEE_IN = as.numeric(TUITIONFEE_IN),
+TUITIONFEE_OUT = as.numeric(TUITIONFEE_OUT),
+SAT_AVG = as.numeric(SAT_AVG),
+ADM_RATE = as.numeric(ADM_RATE)
+) %>%
+mutate(
+CONTROL = as_factor(CONTROL),
+REGION = as_factor(REGION)
+) %>%
+mutate(
+TUITION_DIFF = TUITIONFEE_OUT - TUITIONFEE_IN
+) %>%
+drop_na()
+finding_college <- colleges_clean %>%
+filter(REGION == 1)
+finding_college <- finding_college %>%
+arrange(ADM_RATE) %>%
+top_n(-12, ADM_RATE)
+finding_college <- finding_college %>%
+filter(TUITIONFEE_IN == TUITIONFEE_OUT)
+finding_college <- finding_college %>%
+filter(SAT_AVG %% 2 == 1)
+finding_college <- finding_college %>%
+filter(STABBR != "NH") %>%
+filter(CITY != "Boston") %>%
+filter(INSTNM != "Harvard University")
+finding_college
+whr
+summary(whr)
+colleges_clean %>% mutate(across(TUITIONFEE_IN, TUITIONFEE_OUT), as.numeric)
+colleges_clean %>% mutate(across(c(TUITIONFEE_IN, TUITIONFEE_OUT)), as.numeric)
+colleges_clean %>% mutate(across(c(TUITIONFEE_IN, TUITIONFEE_OUT), as.numeric))
+as.numeric()
+lin_reg_new <- linear_reg() %>%
+set_engine("lm") %>%
+set_mode("regression")
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy +
+social_support + freedom_to_make_life_choices + generosity + perceptions_of_corruption +
+regional_indicator, data = whr) %>%
+step_normalize(all_numeric()) %>%
+step_dummy(all_nominal()) %>%
+step_interact(terms = ~ log_gdp_per_capita : healthy_life_expectancy) %>%
+step_interact(terms = ~ healthy_life_expectancy : social_support) %>%
+step_interact(terms = ~ log_gdp_per_capita : social_support)
+whr_flow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_reg)
+lin_reg <- linear_reg() %>%
+set_engine("lm") %>%
+set_mode("regression")
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy +
+social_support + freedom_to_make_life_choices + generosity + perceptions_of_corruption +
+regional_indicator, data = whr) %>%
+step_normalize(all_numeric()) %>%
+step_dummy(all_nominal()) %>%
+step_interact(terms = ~ log_gdp_per_capita : healthy_life_expectancy) %>%
+step_interact(terms = ~ healthy_life_expectancy : social_support) %>%
+step_interact(terms = ~ log_gdp_per_capita : social_support)
+whr_flow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_reg)
+whr_fit <- whr_flow %>%
+fit(whr)
+whr_fit %>%
+pull_workflow_fit()
+preds <- whr_fit %>%
+predict(new_data = whr)
+head(whr)
+whr_fit
+lin_reg <- linear_reg() %>%
+set_engine("lm") %>%
+set_mode("regression")
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy +
+social_support + freedom_to_make_life_choices + generosity + perceptions_of_corruption +
+regional_indicator, data = whr) %>%
+step_normalize(all_numeric()) %>%
+step_dummy(all_nominal())
+whr_flow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_reg)
+whr_fit <- whr_flow %>%
+fit(whr)
+whr_fit %>%
+pull_workflow_fit()
+preds <- whr_fit %>%
+predict(new_data = whr)
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy + social_support +
+freedom_to_make_life_choices + generosity + perceptions_of_corruption,
+data = whr) %>%
+step_normalize(all_numeric())
+whr_wflow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_mod)
+lin_mod <- linear_reg() %>%
+set_mode("regression") %>%
+set_engine("lm")
+whr_fit <- lin_mod %>%
+fit(happiness_score ~ year, data = whr)
+whr_fit$fit %>% summary()
+whr_fit_2 <- lin_mod %>%
+fit(happiness_score ~ factor(year), data = whr)
+whr_fit_2$fit %>% summary()
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy + social_support +
+freedom_to_make_life_choices + generosity + perceptions_of_corruption,
+data = whr) %>%
+step_normalize(all_numeric())
+whr_wflow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_mod)
+whr_fit <- whr_wflow %>%
+fit(whr) %>%
+pull_workflow_fit()
+whr_fit$fit %>%
+summary()
+preds <- whr_fit %>%
+predict(new_data = whr)
+str(whr)
+lin_reg <- linear_reg() %>%
+set_engine("lm") %>%
+set_mode("regression")
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy +
+social_support + freedom_to_make_life_choices + generosity + perceptions_of_corruption +
+regional_indicator, data = whr) %>%
+step_normalize(all_numeric()) %>%
+#step_dummy(all_nominal()) %>%
+step_interact(terms = ~ log_gdp_per_capita : healthy_life_expectancy) %>%
+step_interact(terms = ~ healthy_life_expectancy : social_support) %>%
+step_interact(terms = ~ log_gdp_per_capita : social_support)
+whr_flow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_reg)
+whr_fit <- whr_flow %>%
+fit(whr)
+whr_fit %>%
+pull_workflow_fit()
+preds <- whr_fit %>%
+predict(new_data = whr)
+lin_reg <- linear_reg() %>%
+set_engine("lm") %>%
+set_mode("regression")
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy +
+social_support + freedom_to_make_life_choices + generosity + perceptions_of_corruption +
+regional_indicator, data = whr) %>%
+step_normalize(all_numeric()) # %>%
+#step_dummy(all_nominal()) %>%
+#step_interact(terms = ~ log_gdp_per_capita : healthy_life_expectancy) %>%
+#step_interact(terms = ~ healthy_life_expectancy : social_support) %>%
+#step_interact(terms = ~ log_gdp_per_capita : social_support)
+whr_flow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_reg)
+whr_fit <- whr_flow %>%
+fit(whr)
+whr_fit %>%
+pull_workflow_fit()
+preds <- whr_fit %>%
+predict(new_data = whr)
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy + social_support +
+freedom_to_make_life_choices + generosity + perceptions_of_corruption,
+data = whr) %>%
+step_normalize(all_numeric())
+whr_wflow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_mod)
+whr_fit <- whr_wflow %>%
+fit(whr) %>%
+pull_workflow_fit()
+whr_fit$fit %>%
+summary()
+preds <- whr_fit %>%
+predict(new_data = whr)
+preds <- whr_flow %>%
+predict(new_data = whr)
+lin_reg <- linear_reg() %>%
+set_engine("lm") %>%
+set_mode("regression")
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy +
+social_support + freedom_to_make_life_choices + generosity + perceptions_of_corruption +
+regional_indicator, data = whr) %>%
+step_normalize(all_numeric()) # %>%
+#step_dummy(all_nominal()) %>%
+#step_interact(terms = ~ log_gdp_per_capita : healthy_life_expectancy) %>%
+#step_interact(terms = ~ healthy_life_expectancy : social_support) %>%
+#step_interact(terms = ~ log_gdp_per_capita : social_support)
+whr_flow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_reg)
+whr_fit <- whr_flow %>%
+fit(whr)
+whr_fit %>%
+pull_workflow_fit()
+preds <- whr_flow %>%
+predict(new_data = whr)
+lin_reg <- linear_reg() %>%
+set_engine("lm") %>%
+set_mode("regression")
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy +
+social_support + freedom_to_make_life_choices + generosity + perceptions_of_corruption +
+regional_indicator, data = whr) %>%
+step_normalize(all_numeric())  %>%
+step_dummy(all_nominal())# %>%
+#step_interact(terms = ~ log_gdp_per_capita : healthy_life_expectancy) %>%
+#step_interact(terms = ~ healthy_life_expectancy : social_support) %>%
+#step_interact(terms = ~ log_gdp_per_capita : social_support)
+whr_flow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_reg)
+whr_fit <- whr_flow %>%
+fit(whr)
+whr_fit %>%
+pull_workflow_fit()
+preds <- whr_flow %>%
+predict(new_data = whr)
+lin_reg <- linear_reg() %>%
+set_engine("lm") %>%
+set_mode("regression")
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy +
+social_support + freedom_to_make_life_choices + generosity + perceptions_of_corruption +
+regional_indicator, data = whr) %>%
+step_normalize(all_numeric())  %>%
+step_dummy(all_nominal())# %>%
+#step_interact(terms = ~ log_gdp_per_capita : healthy_life_expectancy) %>%
+#step_interact(terms = ~ healthy_life_expectancy : social_support) %>%
+#step_interact(terms = ~ log_gdp_per_capita : social_support)
+whr_flow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_reg)
+whr_fit <- whr_flow %>%
+fit(whr)
+whr_fit %>%
+pull_workflow_fit()
+preds <- whr_fit %>%
+predict(new_data = whr)
+whr_fit
+whr_fit %>%
+predict(new_data = whr)
+lin_reg <- linear_reg() %>%
+set_engine("lm") %>%
+set_mode("regression")
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy +
+social_support + freedom_to_make_life_choices + generosity + perceptions_of_corruption +
+regional_indicator, data = whr) %>%
+step_normalize(all_numeric(), -happiness_score)  %>%
+step_dummy(all_nominal())# %>%
+#step_interact(terms = ~ log_gdp_per_capita : healthy_life_expectancy) %>%
+#step_interact(terms = ~ healthy_life_expectancy : social_support) %>%
+#step_interact(terms = ~ log_gdp_per_capita : social_support)
+whr_flow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_reg)
+whr_fit <- whr_flow %>%
+fit(whr)
+whr_fit %>%
+pull_workflow_fit()
+whr_fit %>%
+predict(new_data = whr)
+str(whr)
+whr <- whr %>%
+mutate(predicted_happiness = preds$.pred,
+residuals = happiness_score - predicted_happiness)
+whr %>%
+ggplot(aes(x = happiness_score, y = residuals)) +
+geom_point()
+whr_rec <- recipe(happiness_score ~ log_gdp_per_capita + healthy_life_expectancy + social_support +
+freedom_to_make_life_choices + generosity + perceptions_of_corruption,
+data = whr) %>%
+step_normalize(all_numeric(), -happiness_score)
+whr_wflow <- workflow() %>%
+add_recipe(whr_rec) %>%
+add_model(lin_mod)
+whr_fit <- whr_wflow %>%
+fit(whr) %>%
+pull_workflow_fit()
+whr_fit$fit %>%
+summary()
+preds <- whr_fit %>%
+predict(new_data = whr)
+summary(whr)
