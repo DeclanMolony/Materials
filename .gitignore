@@ -1,3 +1,6 @@
+# Don't put assignment source files online
+Assignments/
+
 # History files
 .Rhistory
 .Rapp.history
